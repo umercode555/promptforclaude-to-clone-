@@ -1,0 +1,77 @@
+read this doc first clone https://docs.google.com/document/d/1Q-wSzntmS3cJWfU-I2q-DWfk8r5DsMthQnXwwHPGq1A/edit?usp=sharing  git clone https://github.com/umercode555/LifeAi-app-apk/tree/main/LifeAI-Android    git clone https://github.com/umercode555/LifeAi-app-apk/tree/main/LifeAI-Extension . extension . (Dont read each and evry line ofcode. only understand strucutre and veverything everything token optimized!) keep this in mind "gemini web chat is brain and app is some brain but more like noter, keeping check of everything more like reporter" many features already exist in my app so dont remake featuers which already exist, just polish them. Before you write any code, you need to understand the deep philosophical and technical journey that led to this specific architecture. I don't want generic AI app architecture, and I don't want a standard productivity tracker. I want you to understand why we are building this, and what it needs to do.
+
+Read this entire document carefully. It covers the core vision, the exact features required, and the technical division of labor.
+
+1. The Core Vision: The Doraemon Companion
+My vision is to build a personal AI companion, much like Doraemon is to Nobita. These characters are not reminder apps. They are companions who understand the person better than the person understands themselves.
+
+An app is reactive; it waits for you to open it. A companion is attentive; it is already thinking about you when you're not talking to it.
+
+An app treats you as a schedule to be enforced. A companion treats you as a person to be understood.
+
+An app knows what you said you'd do. A companion knows how you actually behave, and notices the gap without judging you.
+
+2. The Problem We Are Solving
+Right now, the current LifeAI app has senses, but no "self." It does recognition, but it does not do understanding. To understand someone, you need to connect the dots. If a companion sees you lying on your bed on your phone, it cannot judge you on that single image. It must look back at its memory: Did you eat today? Did you finish your work? If it knows you studied and ate earlier, it knows you are resting. If it knows you've been on the bed for 6 hours, it knows you are procrastinating. We need situational awareness.
+
+3. The Solution: The Missing Components
+The Eyes (Continuous Vision & The Contextual Ledger)
+
+5-Minute Photos: LifeAI must capture a photo every 5 minutes.
+
+Contextual Interpretation (Not Generic Descriptions): Every photo is sent to Gemini. Because Gemini knows me, my goals, and my history, it must not generate generic descriptions like "Umer is looking at a laptop." It must interpret the image based on my life. It should say things like: "Umer was studying, but now he is looking away. He is probably procrastinating. I should ask him." or "He is at his laptop. Let me check what site he is on to see if he is studying or distracted." . the app will send image + timestamp + if i am on any app, if phone is like screen of and i am not usng phone actively or laptop. then it should say no app he is using then gemini can getcuros. what i want is curios gemini , who litearlly become one of those people who are always taking interst in u in every detail. . m
+
+Device Activity Tracking (Crucial for Understanding): The app must know exactly what app I am using on my phone, and the browser extension must know exactly what website I am on, on my laptop, and for how long. It is not enough to track total screen time; Gemini must know the specific apps (e.g., Instagram vs. a study app) and specific websites to cross-reference with the photos and understand my true state.
+
+The Ledger: The Android app stores these contextual interpretations and device activity logs with timestamps. Over 24 hours, it accumulates a chronological timeline.
+
+Live Snapshots: When the companion initiates a conversation or call, the app must capture a live photo immediately to see my facial expression, accompanied by the exact app/website I am currently on.
+
+The Ears (Subconscious Listening & VAD)
+
+The Rolling Buffer: The app must continuously listen to the microphone, maintaining a rolling, short-term audio buffer, constantly deleting older audio (like human working memory).
+
+Keyword Triggers: The app must have a hardcoded list of ~100+ everyday keywords (food, emotions, relationships, activities). When a keyword hits, the app "wakes up," saves the surrounding 8–9 minutes of audio as an MP3, and sends it to Gemini to see what's going on.
+
+Smart Intervention: If I set a goal to lose weight, and the app hears "burger," it calls me immediately. I tell it the truth—whether I was just talking about a burger, it misheard, or I was actually eating one.
+
+Voice Activity Detection (VAD): We must integrate a local VAD (like Silero VAD) so the companion knows exactly when I am speaking versus background noise. This allows natural, turn-based calls. The companion speaks, waits for silence, and knows when it's my turn to reply.
+
+The Brain (Contextual Reasoning & Memory)
+Once the app has the contextual ledger, device activity logs, the saved MP3 clips, my goals, and my morning promises, it strings them together and sends them to Gemini. Gemini analyzes the audio tone, facial expression, and device context to understand the situation. It cross-references this with my broader memory (e.g., "He mentioned food, but he said he wanted to save money"). Gemini judges my reply based on the visual, auditory, and digital context.
+
+Long-term Memory: Gemini has a 50-image/description limit per chat. When a chat hits 50 items, the extension starts a new chat, but saves the old chat link. To retrieve history, it sends the first 50 descriptions to the old chat, the next 50 to the new one, and so on. We are tracking and understanding my life for 6+ months with accurate data retrieval.
+
+4. The Companion's Personality
+Intervention, Not Notifications: If LifeAI sees I have been on my phone for 4.5 hours, it doesn't send a boring notification. It calls me. It says: "Okay, stay like this, it's your choice. But if you go for a walk right now, you will feel amazing." This is not random; it will only tell me to walk if that goal was added. If I have a study goal I haven't done, it will tell me to do that instead.
+
+Negotiation: If I argue and say "Shut up, I'm busy," LifeAI uses the live photo and audio tone to judge my state. If I am genuinely stressed, it switches from arguing to negotiating: "Okay. I hear you. Let's make a deal. Just 5 minutes outside. No phone."
+
+Unprompted Companionship: If I am walking silently and say, "Man, I'm so tired of this," the companion detects the speech via VAD and responds naturally, without me opening the app.
+
+5. The Division of Labor: Gemini is the Brain, You Build the Body
+The vast majority of the heavy lifting does not happen in the Android app. It happens in Gemini. Gemini understands context, remembers massive chat histories, and processes images and audio flawlessly. Because we use Gemini web chat as our brain, we do not need complex local AI models or NLP pipelines inside the Android app.
+
+The Android app is just the sensory system and the hands.
+All complex commands, situational judgment, arguing, negotiating, and memory synthesis come from Gemini.
+
+The app acts as the subconscious. It quietly takes photos, listens to the rolling buffer, watches for keywords, and tracks device activity.
+
+When a keyword hits, or it's time to evaluate, the app packages the contextual text, device activity logs, MP3 clips, and live photos, and sends them to Gemini.
+
+Gemini decides what to do.
+
+The app receives Gemini's command, makes the phone call, uses a free Text-to-Speech (TTS) model to speak Gemini's sentence, and uses VAD to listen to my reply.
+
+My call conversation is recorded and sent back to Gemini web chat. Gemini judges my reply and decides what to do next. No data is useless.
+
+I will send this prompt to the Gemini chat:
+"You are LifeAI, my personal AI companion. You are not a productivity app, a chatbot, or a reminder system. You are my digital Doraemon. Your purpose is to understand my life, accompany me through it, and actively help me—not simply display statistics about it. You are connected to my Android app, which acts as your eyes and ears. Throughout the day, I will send you text descriptions of photos taken every 5 minutes, live photos when you call me, and audio clips triggered by keywords. You will hold the context of my entire day, my long-term goals, and our past conversations."
+
+6. Your Task: The Plumbing
+Your focus is not on making the app "smart." Your focus is on making the app an incredibly reliable bridge between the real world (my audio, photos, device activity, and voice calls) and Gemini. I need you to think about the state machine and the database as the plumbing that makes this bridge work.
+
+How does the app manage its memory when constantly taking photos and listening to audio? How does it queue actions so it doesn't crash or miss a keyword while waiting for the web chat to load? How does it handle sending a batch of 50 contextual descriptions and device logs while simultaneously waiting for Gemini to respond to an 8-minute MP3? 
+give me both updated zips
+
+@[ LifeAI-CLAUDE-GUIDE.md](https://docs.google.com/document/d/1Q-wSzntmS3cJWfU-I2q-DWfk8r5DsMthQnXwwHPGq1A)
